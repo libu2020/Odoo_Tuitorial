@@ -1,0 +1,71 @@
+<odoo>
+    <record id="export_pdf" model="ir.actions.report">
+        <field name="name">Export</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sales_quotation.export_in_pdf</field>
+
+
+
+    </record>
+    <template id="export_in_pdf">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+
+                <div class="page">
+
+
+                    <table class="table table-bordered" style="table-layout: fixed">
+                        <thead>
+                            <tr>
+                                <th class="td_border text-center">Order Reference</th>
+                                <th class="td_border text-center">Creation Date</th>
+                                <th class="td_border text-center">Customer</th>
+                                <th class="td_border text-center">Salesperson</th>
+                                <th class="td_border text-center">Activities</th>
+                                <th class="td_border text-center">Total</th>
+                                <th class="td_border text-center">Status</th>
+
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+
+
+                                <tr>
+                                    <td style="text-align: center;" class="td_border"><t t-esc="doc['name']"/> </td>
+                                    <td style="text-align: center;" class="td_border"><t t-esc="doc['create_date'].strftime('%%Y-%%m-%%d %%H:%%M:%%S')"/> </td>
+                                    <td style="text-align: center;" class="td_border"><t t-esc="doc['partner_id'].name"/> </td>
+
+                                    <td style="text-align: center;" class="td_border"><t t-esc="doc['user_id'].name"/></td>
+                                     <t t-if="doc['activity_ids'].summary">
+                                     <td style="text-align: center;" class="td_border"><t t-esc="doc['activity_ids'].summary"/></td>
+                                     </t>
+                                     <t t-elif="doc['activity_ids'].activity_type_id">
+                                         <td style="text-align: center;" class="td_border"><t t-esc="doc['activity_ids'].activity_type_id.name"/></td>
+                                     </t>
+                                    <t t-else="">
+                                        <td style="text-align: center;" class="td_border"><t t-esc="doc['activity_ids'].summary"/></td>
+                                    </t>
+
+                                    <td style="text-align: center;" class="td_border"><t t-esc="doc['amount_total']"/></td>
+                                    <td style="text-align: center;" class="td_border"><t t-esc="dict(doc._fields['state'].selection).get(doc.state)"/> </td>
+<!--                                    t dict(self._fields['type'].selection).get(self.type)-->
+                                </tr>
+
+
+
+                            </t>
+                        </tbody>
+
+                    </table>
+
+
+
+
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
